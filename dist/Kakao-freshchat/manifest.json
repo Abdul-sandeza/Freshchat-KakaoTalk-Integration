@@ -1,0 +1,33 @@
+{
+  "platform-version": "2.2",
+  "product": {
+    "freshchat": {
+      "events": {
+        "onAppInstall": {
+          "handler": "onAppInstallCallback"
+        },
+        "onAppUninstall": {
+          "handler": "onAppUninstallCallback"
+        },
+        "onExternalEvent": {
+          "handler": "onExternalEventCallback"
+        },
+        "onMessageCreate": {
+          "handler": "onMessageCreateCallback"
+        },
+        "onUserCreate": {
+          "handler": "onUserCreateCallback"
+        }
+      }
+    }
+  },
+  "whitelisted-domains": [
+    "https://*.m.pipedream.net",
+    "https://*.freshchat.com",
+    "https://kakao-api.happytalk.io"
+  ],
+  "engines": {
+    "node": "14.0.0",
+    "fdk": "8.6.6"
+  }
+}

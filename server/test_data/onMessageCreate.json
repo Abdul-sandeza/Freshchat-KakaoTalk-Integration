@@ -1,0 +1,34 @@
+{
+  "account_id": "13",
+  "event": "onExternalEvent",
+  "timestamp": 1496400354326,
+  "region": "US",
+  "domain": "https://manufacturingverticalsandbox.freshchat.com/v2",
+  "data": {
+    "conversation": {
+      "message_parts": [
+        {
+          "text": {
+            "content": " sample message"
+          }
+        }
+      ],
+      "app_id": "4c5cdfa2-9070-4a62-abf2-7d25953b954e",
+      "actor_id": "c93ef932-06cd-4e7b-9cfa-729acc8ad376",
+      "org_actor_id": "507776472293073467",
+      "id": "8191a5be-8483-4c99-8853-644b68aea174",
+      "channel_id": "39829688-cf36-4424-a31b-e961e56b2dc4",
+      "conversation_id": "ef8dfdac-21cc-4da5-b092-2617bbd30db1",
+      "interaction_id": "686359053305681-1670323328248",
+      "message_type": "normal",
+      "actor_type": "agent",
+      "created_time": "2022-12-12T06:02:42.735Z",
+      "user_id": "832bd323-fef6-44d4-bcc5-5611db04c12c",
+      "restrictResponse": false,
+      "botsPrivateNote": false
+    }
+  },
+  "headers": {
+    "Content-Type": "application/json"
+  }
+}
