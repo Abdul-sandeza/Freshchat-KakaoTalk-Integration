@@ -12,6 +12,9 @@
         "onExternalEvent": {
           "handler": "onExternalEventCallback"
         },
+        "onConversationCreate": {
+          "handler": "onConversationCreateCallback"
+        },
         "onMessageCreate": {
           "handler": "onMessageCreateCallback"
         },
@@ -24,7 +27,11 @@
   "whitelisted-domains": [
     "https://*.m.pipedream.net",
     "https://*.freshchat.com",
-    "https://kakao-api.happytalk.io"
+    "https://kakao-api.happytalk.io",
+    "https://bfzyifbc8l.execute-api.us-east-1.amazonaws.com",
+    "https://*.amazonaws.com",
+    "https://*.ngrok.io",
+    "https://*.cloudfront.net"
   ],
   "engines": {
     "node": "14.0.0",

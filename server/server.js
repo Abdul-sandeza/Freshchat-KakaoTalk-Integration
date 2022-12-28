@@ -1,12 +1,9 @@
-// const thirdPartyEndpoint = 'https://eomt4pwuo6e17sl.m.pipedream.net/kakao'
-
-
-function searchUser(value, domain) {
-  let user_key = value.user_key
-  let content = value.content
+function searchUser(passData, domain) {
+  let user_key = passData.user_key
+  let content = passData.content
   console.log("domain", domain);
   console.log("content form seaarch =====>", content);
-  console.log("referance id for searchUser", value);
+  console.log("referance id for searchUser", passData);
   const requestUrl = `${domain}/users?reference_id=${user_key}`
   console.log("request url: for searchUser", requestUrl);
   const requestOptions = {
@@ -207,24 +204,34 @@ exports = {
   onAppInstallCallback: async function (payload) {
     console.log("onapp install", payload);
     let thirdPartyEndpoint = payload.iparams.webhook_url
-    console.log("this is third party endpoint", thirdPartyEndpoint);
+    // console.log("this is third party endpoint", thirdPartyEndpoint);
     try {
       const webhook = await generateTargetUrl();
       const options = {
         body: `{'webhook': ${webhook}}`,
-        action: 'register'
+        action: 'register',
+        json: {
+          user_key: payload.user_key,
+          session_id: payload.session_id,
+          sender_key: payload.sender_key,
+          time: payload.time,
+          serial_number: payload.serial_number,
+          type: payload.type,
+          content: payload.content
+        }
       };
+      console.log("------------", options);
       const { response } = await $request.post(thirdPartyEndpoint, options);
+      renderData();
 
       console.info('\n Webhook creation successful \n', webhook);
       console.info('\n Webhook Registration Successful \n', response);
       console.info('\n Hander received following payload when app is installed \n\n', payload);
 
-      renderData();
     } catch (error) {
-      console.error('Something went wrong. Webhook Registration has failed');
-      renderData();
+      console.error('Something went wrong. Webhook Registration has failed', error);
     }
+    renderData();
   },
   /**
   * Handler for onAppUninstall event
@@ -237,7 +244,7 @@ exports = {
   onAppUninstallCallback: async function (payload) {
     console.log("uninstall", payload);
     let thirdPartyEndpoint = payload.iparams.webhook_url
-    console.log("this is third party endpoint", thirdPartyEndpoint);
+    // console.log("this is third party endpoint", thirdPartyEndpoint);
     try {
       const options = {
         action: 'de-register'
@@ -253,15 +260,22 @@ exports = {
 
   onExternalEventCallback: function (payload) {
     var domain = payload.iparams.freshchat_domain;
-    const { data } = payload;
-    console.log("========this` is external freshchat url=======", domain);
-    console.log("onExternalEventCallback payload ====>", data);
+    // console.log("========this` is external freshchat url=======", domain);
+    console.log("onExternalEventCallback payload ====>", (payload));
+    const { data } = (payload);
+    // let externalData = (data);
+    if (typeof (data) == "string") {
+      externalData = (data)
+    } else {
+      externalData = (data)
+    }
     let passData = {}
-    passData.user_key = payload.data.user_key
-    passData.sender_key = payload.data.sender_key
-    passData.serial_number = payload.data.serial_number
-    passData.type = payload.data.type
-    passData.content = payload.data.content
+    passData.user_key = externalData.user_key
+    passData.sender_key = externalData.sender_key
+    passData.serial_number = externalData.serial_number
+    passData.type = externalData.type
+    passData.content = externalData.content
+    console.log("passdata: ", passData);
     searchUser(passData, domain);
 
   },
@@ -352,8 +366,8 @@ exports = {
   },
   onMessageCreateCallback: async function (payload) {
     var domain = payload.iparams.freshchat_domain;
-    console.log("========this is onMessageCreateCallback freshchat url=======", domain);
-    console.log("========this is onMessageCreateCallback payload=======", payload.data.conversation);
+    // console.log("========this is onMessageCreateCallback freshchat url=======", domain);
+    console.log("========this is onMessageCreateCallback payload=======", payload);
     console.log("========this is onMessageCreateCallback payload=======", payload.event);
     let messageData = payload.data.conversation.message_parts
     let messageArr = messageData.map((item) => (item.text.content));

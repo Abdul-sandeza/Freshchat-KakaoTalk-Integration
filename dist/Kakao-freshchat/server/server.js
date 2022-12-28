@@ -1,20 +1,9 @@
-// const util = require('./lib/util');
-
-// function activateKakaoChat
-
-// const thirdPartyEndpoint = 'https://eomt4pwuo6e17sl.m.pipedream.net/kakao'
-
-// const freshdeskUrl = 'https://manufacturingverticalsandbox.freshchat.com/v2'
-// const freshdeskUrl = 'https://manufacturingverticalsandbox.freshchat.com/v2'
-
-
-function searchUser(value, domain) {
-  let user_key = value.user_key
-  let content = value.content
-  // let domain = domain
+function searchUser(passData, domain) {
+  let user_key = passData.user_key
+  let content = passData.content
   console.log("domain", domain);
   console.log("content form seaarch =====>", content);
-  console.log("referance id for searchUser", value);
+  console.log("referance id for searchUser", passData);
   const requestUrl = `${domain}/users?reference_id=${user_key}`
   console.log("request url: for searchUser", requestUrl);
   const requestOptions = {
@@ -26,16 +15,14 @@ function searchUser(value, domain) {
     let result = JSON.parse(data.response);
     let userlist = (result.users.reverse());
     let userArr = (userlist[0]);
-    console.log("userArr all user here =========>", userArr);
+    console.log("userArr all user here =========> 1", userArr);
     let userId = userArr.id
-    console.log("userId=", userArr.id);
-    // let userMap = userArr.map((item) => (item.id));
-    // let userId = userMap.toString();
+    console.log("userId= 1", userArr.id);
 
     let passData = {}
     passData.userId = userId;
     passData.content = content;
-    console.log('User Information =====>', userId);
+    console.log('User Information =====> 1', userId);
     getUserConversationId(passData, domain)
   }, function (err) {
     console.log('error message from search user =====>', err);
@@ -44,14 +31,14 @@ function searchUser(value, domain) {
 }
 
 function getUserConversationId(value, domain) {
-  console.log("value from getUserConversation", value);
-  console.log("message content", value.content);
+  console.log("value from getUserConversation 2", value);
+  console.log("message content 2", value.content);
   let user_id = value.userId
   let message_content = value.content
 
-  console.log("referance id for searchUser", user_id);
+  console.log("referance id for searchUser 2", user_id);
   const requestUrl = `${domain}/users/${user_id}/conversations`
-  console.log("request url: for getUserConversation", requestUrl);
+  console.log("request url: for getUserConversation 2", requestUrl);
   const requestOptions = {
     headers: {
       Authorization: 'Bearer <%= iparam.freshChat_key %>'
@@ -59,18 +46,18 @@ function getUserConversationId(value, domain) {
   };
   $request.get(requestUrl, requestOptions).then(function (data) {
     let value = JSON.parse(data.response);
-    console.log("getUserConversation info", value);
+    console.log("getUserConversation info 2", value);
     let conversationArr = (value.conversations);
-    console.log("data from getUserConversation=====>", (conversationArr));
+    console.log("data from getUserConversation=====> 2", (conversationArr));
     let valueMap = conversationArr.map((item) => (item.id));
     let result = valueMap.toString();
-    console.log('Conversation ID =====>', result);
+    console.log('Conversation ID =====> 2', result);
 
     let passData = {}
     passData.userId = user_id
     passData.content = message_content
     passData.conversationId = result
-    console.log("passData: from getUserConversation", passData);
+    console.log("passData: from getUserConversation 2", passData);
     getConversationDetails(passData, domain)
 
   }, function (err) {
@@ -79,12 +66,12 @@ function getUserConversationId(value, domain) {
 }
 
 function getConversationDetails(value, domain) {
-  console.log("conversation Id", value);
+  console.log("conversation Id 3", value);
   var conversation_id = value.conversationId
-  console.log("conversation_id", conversation_id);
-  console.log("conversation_id", conversation_id);
+  console.log("conversation_id 3", conversation_id);
+  console.log("conversation_id 3", conversation_id);
   const requestUrl = `${domain}/conversations/${conversation_id}`
-  console.log("request url: for getUser", requestUrl);
+  console.log("request url: for getUser 3", requestUrl);
   const requestOptions = {
     headers: {
       Authorization: 'Bearer <%= iparam.freshChat_key %>'
@@ -92,7 +79,7 @@ function getConversationDetails(value, domain) {
   };
   $request.get(requestUrl, requestOptions).then(function (data) {
     let result = JSON.parse(data.response);
-    console.log("this is from conversation details ", result);
+    console.log("this is from conversation details 3", result);
     let passData = {}
     passData.userId = value.userId;
     passData.conversation_id = result.conversation_id
@@ -101,95 +88,15 @@ function getConversationDetails(value, domain) {
     passData.channel_id = result.channel_id
     passData.skill_id = result.skill_id
     passData.content = value.content
-    // sendMessageToAgent(result, domain)
-
-    createConversation(passData, domain)
-
+    sendMessageToAgent(passData, domain)
   }, function (err) {
     console.log('error message from search user =====>', err);
   });
 }
 
-function createConversation(payload, domain) {
-
-  console.log("value from conversation =====>", payload);
-  const requestUrl = `${domain}/conversations`
-  var headers = {
-    "Authorization": 'Bearer <%= iparam.freshChat_key %>',
-    "Content-Type": "application/json"
-  };
-  var reqData = {
-    headers: headers,
-    isOAuth: true,
-    json: {
-      "app_id": payload.app_id,
-      "channel_id": payload.channel_id,
-      "messages": [
-        {
-          "app_id": payload.app_id,
-          "actor_type": "user",
-          "actor_id": payload.userId,
-          "channel_id": payload.channel_id,
-          "message_type": "normal",
-          "message_parts": [
-            {
-              "text": {
-                "content": payload.content
-              }
-            }
-          ]
-        }
-      ],
-      "status": payload.status,
-      "users": [
-        {
-          "id": payload.userId
-        }
-      ]
-    }
-  };
-  $request.post(requestUrl, reqData).then(function (data, err) {
-    if (err) {
-      console.error('external event error', JSON.stringify(err));
-    } else {
-      console.log("Create Conversation response =====>", data.response);
-      let result = data.response
-      sendMessageToAgent(result, domain)
-
-    }
-  })
-
-}
-
 function sendMessageToAgent(payload, domain) {
-  //
-  let messagebodyArr = (payload.messages);
-  console.log("data from sendMessageToAgent details=====>", (messagebodyArr));
-  let conversationIdMap = messagebodyArr.map((item) => (item.conversation_id));
-  let conversation_id = conversationIdMap.toString();
-  console.log('Conversation ID =====>', conversation_id);
-
-  let actorIdMap = messagebodyArr.map((item) => (item.actor_id));
-  let actor_id = actorIdMap.toString();
-  console.log('actor_id =====>', actor_id);
-
-  let message_typeArr = messagebodyArr.map((item) => (item.message_type));
-  message_type = message_typeArr.toString()
-  console.log('message_type =====>', message_type);
-
-
-  let messagePartsArr = messagebodyArr.map((item) => (item.message_parts));
-  // message_parts = messagePartsArr.toString()
-  // console.log('message_parts =====>', message_parts);
-
-  let messageTextArr = messagePartsArr.map((item) => (item));
-  console.log('message_text =====>', messageTextArr[0][0].text.content);
-  message_text = messageTextArr[0][0].text.content
-
-  //
-
-
-  // console.log("value from conversation =====>", payload);
+  console.log("payload from conversation: 4" + JSON.stringify(payload))
+  let conversation_id = payload.conversation_id
   const requestUrl = `${domain}/conversations/${conversation_id}/messages`
   var headers = {
     "Authorization": 'Bearer <%= iparam.freshChat_key %>',
@@ -200,12 +107,12 @@ function sendMessageToAgent(payload, domain) {
     isOAuth: true,
     json: {
       "actor_type": "user",
-      "actor_id": actor_id,
-      "message_type": message_type,
+      "actor_id": payload.userId,
+      "message_type": "normal",
       "message_parts": [
         {
           "text": {
-            "content": message_text
+            "content": payload.content
           }
         }
       ]
@@ -213,66 +120,74 @@ function sendMessageToAgent(payload, domain) {
   };
   $request.post(requestUrl, reqData).then(function (data, err) {
     if (err) {
-      console.error('sendMessageToAgent error', JSON.stringify(err));
+      console.error('sendMessageToAgent error 4', JSON.stringify(err));
     } else {
-      console.log("sendMessageToAgent =====>", data.response);
+      console.log("sendMessageToAgent =====> 4", data.response);
     }
-  })
+
+  }).catch((err) => { console.log(err) })
+
 }
 
-function receiveMessageFromAgent(payload, webhook_url) {
-
-  let domain = webhook_url
 
 
-  const requestUrl = `${domain}/messages`
+
+
+function searchUserForAgent(payload, domain) {
+  console.log("searchUserForAgent", payload, domain);
+  let userId = payload.user_id;
+  let message_type = payload.message_type;
+  let message_content = payload.content;
+  const requestUrl = `${domain}/users/${userId}`
+  console.log("request url: for searchUser from agent message", requestUrl);
   const requestOptions = {
     headers: {
-      // Authorization: 'Bearer <%= iparam.freshChat_key %>'
+      Authorization: 'Bearer <%= iparam.freshChat_key %>'
     },
-    json: {
-      "user_key": "c0eUY5TATGz1",
-      "sender_key": "3fd538ef7218a14a63e51ba47e83c76e1ff5ab62",
-      "time": "1668429686816",
-      "serial_number": "2914978254845711401",
-      "type": "text",
-      "content": "sandeza",
-      "attachment": "sandeza.io",
-      "extra": "product consultant"
-
-    }
   };
+  $request.get(requestUrl, requestOptions).then(function (data) {
+    console.log("data from searchuserforagent", data.response);
+    let result = JSON.parse(data.response);
+    console.log("searchuserforagent======>", result);
 
-  $request.post(requestUrl, requestOptions).then(function (data) {
 
-    console.log('message sent', JSON.stringify(data));
-    sendMessageToUser(payload)
+    let passData = {}
+    passData.user_key = result.reference_id;
+    passData.message_type = message_type;
+    passData.message_content = message_content;
+    passData.client_id = payload.client_id;
+    passData.client_secret = payload.client_secret;
+    passData.sender_key = payload.sender_key
+    console.log("pass data =searchUserForAgent", passData);
+    sendMessageToUser(passData)
   }, function (err) {
-    console.log('Failed to send message - ', JSON.stringify(err));
+    console.log('error message from search user =====>', err);
   });
 }
 
 function sendMessageToUser(payload) {
-
+  const d = new Date();
+  let time = d.getTime().toString();
   const requestUrl = `https://kakao-api.happytalk.io/v1/chat/write`
   const requestOptions = {
     headers: {
       "Content-Type": "application/json",
-      "HT-Client-Id": payload.iparams.Kakao_Client_ID,
-      "HT-Client-Secret": payload.iparams.Kakao_Client_Secret
+      "HT-Client-Id": payload.client_id,
+      "HT-Client-Secret": payload.client_secret
     },
     json: {
-      "user_key": "c0eUY5TATGz1",
-      "sender_key": "3fd538ef7218a14a63e51ba47e83c76e1ff5ab62",
-      "serial_number": "2912789790723111222",
+      "user_key": payload.user_key,
+      "sender_key": payload.sender_key,
+      // "serial_number": "2912789790723111230",
+      "serial_number": time,
       "message_type": "TX",
-      "message": "from serverless application"
+      "message": payload.message_content
     }
   };
-
+  console.log("sendMessageToUser", requestOptions);
   $request.post(requestUrl, requestOptions).then(function (data) {
 
-    console.log('message sent to user', JSON.stringify(data));
+    console.log('message sent to user', (data.response));
   }, function (err) {
     console.log('Failed to send message - ', JSON.stringify(err));
   });
@@ -282,142 +197,77 @@ function sendMessageToUser(payload) {
 
 exports = {
   /**
-   * Handler for onAppInstall event
- 
-   * @param {object} args - payload
-   */
+    * Handler for onAppInstall event
+    
+  * @param {object} args - payload
+  */
   onAppInstallCallback: async function (payload) {
+    console.log("onapp install", payload);
+    let thirdPartyEndpoint = payload.iparams.webhook_url
+    console.log("this is third party endpoint", thirdPartyEndpoint);
     try {
       const webhook = await generateTargetUrl();
       const options = {
         body: `{'webhook': ${webhook}}`,
         action: 'register'
       };
-      const { response } = await $request.post(thirdPartyEndpoint + "/kakao", options);
+      const { response } = await $request.post(webhook, options);
+      renderData();
 
       console.info('\n Webhook creation successful \n', webhook);
       console.info('\n Webhook Registration Successful \n', response);
       console.info('\n Hander received following payload when app is installed \n\n', payload);
 
-      renderData();
     } catch (error) {
-      console.error('Something went wrong. Webhook Registration has failed');
+      console.error('Something went wrong. Webhook Registration has failed', error);
     }
+    renderData();
   },
   /**
-   * Handler for onAppUninstall event
-   *
-   * Get the webhook URL from data storage through $db that was stored during installation
-   * Deregister the webhook from JIRA with the URL over REST API
-   *
-   * @param {object} args - payload
-   */
-  onAppUninstallCallback: function (args) {
-    $db.get('jiraWebhookId').done(function (data) {
-      $request.delete(
-        data.url,
-        {
-          headers: {
-            Authorization: "Basic " + util.getJiraKey(args)
-          }
-        }
-      ).then(() => {
-        renderData();
-      }, error => {
-        console.error('Failed to deregister the webhook');
-        console.error(error);
-        renderData({ message: 'Webhook deregistration failed' });
-      });
-    }).fail(function () {
-      renderData({ message: 'Webhook deregistration failed' });
-    });
+  * Handler for onAppUninstall event
+  *
+  * Get the webhook URL from data storage through $db that was stored during installation
+  * Deregister the webhook from JIRA with the URL over REST API
+  *
+  * @param {object} args - payload
+  */
+  onAppUninstallCallback: async function (payload) {
+    console.log("uninstall", payload);
+    let thirdPartyEndpoint = payload.iparams.webhook_url
+    console.log("this is third party endpoint", thirdPartyEndpoint);
+    try {
+      const options = {
+        action: 'de-register'
+      };
+      const { response } = await $request.post(thirdPartyEndpoint, options);
+      console.info('\n Webhook De-Registration Successful \n', response);
+      console.info('\n Hander received following payload when app is uninstalled \n\n', payload);
+    } catch (error) {
+      console.error('Something went wrong. Webhook De-Registration has failed', error);
+    }
+    renderData();
   },
-  // onExternalEventCallback: function (payload) {
-  //   // let requestUrl = "thirdPartyEndpoint"
-  //   // const payloadData = typeof payload.data === 'string' ? JSON.parse(payload.data) : payload.data;
-  //   // if (payloadData.action === 'opened') {
-  //   const response = $request.post(thirdPartyEndpoint,
-  //     {
-  //       // headers: {
-  //       //   Authorization: '<%= encode(iparam.freshdesk_api_key) %>'
-  //       // },
 
-  //       json: {
-  //         "user_key": payload.data.conversation.user_key,
-  //         "sender_key": payload.data.conversation.sender_key,
-  //         "time": payload.data.conversation.time,
-  //         "serial_number": payload.data.conversation.serial_number,
-  //         "type": payload.data.conversation.type,
-  //         "content": payload.data.conversation.content,
-  //         "attachment": payload.data.conversation.attachment,
-  //         "extra": payload.data.conversation.extra
-  //       },
-  //       method: "POST"
-  //     }).then(() => {
-  //       console.log('Successfully created ticket in Freshdesk', response);
-  //     }, error => {
-  //       console.log('Error: Failed to create ticket in Freshdesk');
-  //       console.log(error)
-  //     })
-
-  // },
   onExternalEventCallback: function (payload) {
-    var domain = payload.iparams.freshchat_domain
-    console.log("========this is external freshchat url=======", domain);
+    var domain = payload.iparams.freshchat_domain;
+    // console.log("========this` is external freshchat url=======", domain);
+    console.log("onExternalEventCallback payload ====>", (payload));
+    const { data } = (payload);
+    // let externalData = (data);
+    if (typeof (data) == "string") {
+      externalData = JSON.parse(data)
+    } else {
+      externalData = (data)
+    }
+    let passData = {}
+    passData.user_key = externalData.user_key
+    passData.sender_key = externalData.sender_key
+    passData.serial_number = externalData.serial_number
+    passData.type = externalData.type
+    passData.content = externalData.content
+    console.log("passdata: ", passData);
+    searchUser(passData, domain);
 
-    var url = `${payload.iparams.webhook_url}/message`
-    var headers = {
-      // "Authorization": "Bearer <%= access_token %>",
-      "Content-Type": "application/json"
-    };
-    var reqData = {
-      headers: headers,
-      isOAuth: true,
-      json: {
-        "user_key": payload.data.conversation.user_key,
-        "sender_key": payload.data.conversation.sender_key,
-        "time": payload.data.conversation.time,
-        "serial_number": payload.data.conversation.serial_number,
-        "type": payload.data.conversation.type,
-        "content": payload.data.conversation.content,
-        "attachment": payload.data.conversation.attachment,
-        "extra": payload.data.conversation.extra
-      }
-    };
-    $request.post(url, reqData).then(function (data, err) {
-      if (err) {
-        console.error('external event error', JSON.stringify(err));
-      } else {
-        console.log("External event data =====>", data.response);
-        var contact = data.response;
-        console.log("contact:", contact);
-        let passData = {}
-        passData.user_key = payload.data.conversation.user_key
-        passData.sender_key = payload.data.conversation.sender_key
-        passData.serial_number = payload.data.conversation.serial_number
-        passData.type = payload.data.conversation.type
-        passData.content = payload.data.conversation.content
-        passData.attachment = payload.data.conversation.attachment
-        passData.extra = payload.data.conversation.extra
-        searchUser(passData, domain);
-      }
-    })
-    // .then(function (data) {
-    //   // console.log("searchUser data =====", data);
-    //   // var contact = JSON.parse(data.response);
-    //   // searchUser(contact.user_key);
-    // }, function (err) {
-    //   console.error('Contact fetching failed from Hubspot.', JSON.stringify(err));
-    // });
-    // .then(function (data) {
-    //   var contact = JSON.parse(data.response);
-    //   createFreshdeskContact(args.iparams.freshdesk_domain,
-    //     contact.properties.firstname.value,
-    //     contact.properties.email.value,
-    //     contact.properties.jobtitle.value);
-    // }, function (err) {
-    //   console.error('Contact fetching failed from Hubspot.', JSON.stringify(err));
-    // });
   },
   onUserCreateCallback: async function (payload) {
     var domain = payload.iparams.freshchat_domain
@@ -454,96 +304,79 @@ exports = {
 
     console.log("request url: for getUser", requestOptions);
     $request.post(requestUrl, requestOptions).then(function (data) {
-      // let result = JSON.parse(data.response);
       console.log("user created with id ", data.response);
 
     }, function (err) {
       console.log('error message from search user =====>', err);
     });
   },
-  onMessageCreateCallback: async function (payload) {
-    let webhook_url = payload.iparams.webhook_url
-    console.log("this is webhook url", webhook_url);
+  onConversationCreateCallback: async function (payload) {
     var domain = payload.iparams.freshchat_domain
-    let conversation_id = payload.conversation_id
-    const requestUrl = `${domain}/conversations/${conversation_id}/messages`
-    console.log("onmessage create callback", requestUrl);
-
+    var requestUrl = `${domain}/conversations`
+    console.log("request url: for onConversationCreateCallback", requestUrl);
     var headers = {
-      "Authorization": 'Bearer <%= iparam.freshChat_key %>',
+      Authorization: 'Bearer <%= iparam.freshChat_key %>',
     };
     const requestOptions = {
       headers: headers,
       isOAuth: true,
       json: {
-        "actor_type": payload.actor_type,
-        "actor_id": payload.actor_id,
-        "message_type": payload.message_type,
-        "message_parts": [
+        "app_id": payload.data.conversation.app_id,
+        "channel_id": payload.data.conversation.channel_id,
+        "messages": [
           {
-            "text": {
-              "content": "payload.message_parts.text.content"
-            }
-
+            "actor_type": "agent",
+            "actor_id": "c93ef932-06cd-4e7b-9cfa-729acc8ad376",
+            "message_type": "normal",
+            "message_parts": [
+              {
+                "text": {
+                  "content": "hey dude!!"
+                }
+              }
+            ]
+          }
+        ],
+        "status": "new",
+        "users": [
+          {
+            "id": payload.data.conversation.user_id
           }
         ]
       }
     };
-    // console.log("onmessage create callback", headers);
-    // console.log("onmessage create callback", requestOptions);
-    $request.post(requestUrl, requestOptions).then(function (data, err) {
-      if (err) {
-        console.error('external event error', JSON.stringify(err));
-      } else {
-        console.log("on message create response =====>", data.response);
-        receiveMessageFromAgent(payload, webhook_url)
-      }
-    })
-    // .then(function (data) {
-    // }, function (err) {
-    //   console.error('Contact fetching failed from Hubspot.', JSON.stringify(err));
-    // })
+
+    console.log("request url: for createconversation", requestOptions);
+    $request.post(requestUrl, requestOptions).then(function (data) {
+      console.log("user conversation created with id ", data.response);
+
+    }, function (err) {
+      console.log('error message from createconversation =====>', err);
+    });
+  },
+  onMessageCreateCallback: async function (payload) {
+    var domain = payload.iparams.freshchat_domain;
+    console.log("========this is onMessageCreateCallback freshchat url=======", domain);
+    console.log("========this is onMessageCreateCallback payload=======", payload.data.conversation);
+    console.log("========this is onMessageCreateCallback payload=======", payload.event);
+    let messageData = payload.data.conversation.message_parts
+    let messageArr = messageData.map((item) => (item.text.content));
+    console.log("messageArr", messageArr);
+    console.log("messageArr", messageData);
+    let message = messageArr.toString();
+    let passData = {}
+    passData.user_id = payload.data.conversation.user_id
+    passData.conversation_id = payload.data.conversation.conversation_id
+    passData.actor_type = payload.data.conversation.actor_type
+    passData.message_type = payload.data.conversation.message_type
+    passData.content = message
+    passData.client_id = payload.iparams.Kakao_Client_ID;
+    passData.client_secret = payload.iparams.Kakao_Client_Secret;
+    passData.sender_key = payload.iparams.Kakao_Sender_Key
+    searchUserForAgent(passData, domain)
+
+
   }
 };
 
-
-
-// onMessageCreateCallback: async function (payload) {
-//   var kakaoUrl = `https://kakao-api.happytalk.io/v1/chat/write`
-//   var headers = {
-//     "Content-Type": "application/json",
-//     "HT-Client-Id": payload.iparams.Kakao_Client_ID,
-//     "HT-Client-Secret": payload.iparams.Kakao_Client_Secret
-//   };
-//   var reqData = {
-//     headers: headers,
-//     // isOAuth: true,
-//     json: {
-//       "user_key": "c0eUY5TATGz1",
-//       // "user_key": payload.data.conversation.user_key,
-//       // "sender_key": payload.data.conversation.sender_key,
-//       // "serial_number": payload.data.conversation.serial_number,
-//       // "time": payload.data.conversation.time,
-//       // "message_type": payload.data.conversation.type,
-//       // "message": payload.data.conversation.content,
-//       "sender_key": "3fd538ef7218a14a63e51ba47e83c76e1ff5ab62",
-//       "serial_number": "2912789790723111023",
-//       "message_type": "TX",
-//       "message": "HI from serverless app",
-//       // "attachment": payload.data.conversation.attachment,
-//       // "extra": payload.data.conversation.extra
-//     }
-//   };
-//   await $request.post(kakaoUrl, reqData).then(function (data, err) {
-//     if (err) {
-//       console.error('Contact creation in HubSpot failed.', JSON.stringify(err), reqData);
-//     } else {
-//       console.log("this is the data from external event", data, JSON.stringify(reqData), headers);
-//     }
-//   })
-//   // .then(function (data) {
-//   // }, function (err) {
-//   //   console.error('Contact fetching failed from Hubspot.', JSON.stringify(err));
-//   // })
-// }
 

@@ -1,7 +1,19 @@
 {
-  "timestamp": 1496400354326,
   "account_id": "13",
-  "domain": "https://manufacturingverticalsandbox.freshchat.com",
-  "event": "onAppInstall",
-  "region": "US"
+  "event": "onExternalEvent",
+  "timestamp": 1496400354326,
+  "region": "US",
+  "domain": "https://manufacturingverticalsandbox.freshchat.com/v2",
+  "data": {
+    "user_key": "c0eUY5TATGz1",
+    "session_id": "182348751",
+    "sender_key": "3fd538ef7218a14a63e51ba47e83c76e1ff5ab62",
+    "time": "1671697002230",
+    "serial_number": "2942386483069829800",
+    "type": "text",
+    "content": "ddddddddddddddj"
+  },
+  "headers": {
+    "Content-Type": "application/json"
+  }
 }
