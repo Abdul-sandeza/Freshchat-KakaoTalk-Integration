@@ -1,7 +1,8 @@
 function createConversation(user_id, message_content, iparams) {
   let user_key = user_id
   let content = message_content
-  console.log("createConversation iparams", iparams.freshChat_key);
+  console.log("createConversation freshChat_key iparams", iparams.freshChat_key);
+  console.log("createConversation all iparams", iparams);
   const requestUrl = `${iparams.freshchat_domain}/conversations`
   const requestOptions = {
     headers: {
@@ -35,13 +36,14 @@ function createConversation(user_id, message_content, iparams) {
     // },
     {
       app_id: "4c5cdfa2-9070-4a62-abf2-7d25953b954e",
-      channel_id: "39829688-cf36-4424-a31b-e961e56b2dc4",
+      channel_id: iparams.channel_list.id,
+      assigned_group_id: iparams.group_list.id,
       messages: [
         {
           app_id: "4c5cdfa2-9070-4a62-abf2-7d25953b954e",
           actor_type: "user",
           actor_id: user_key,
-          channel_id: "39829688-cf36-4424-a31b-e961e56b2dc4",
+          channel_id: iparams.channel_list.id,
           message_type: "normal",
           message_parts: [
             {
@@ -79,11 +81,13 @@ function createConversation(user_id, message_content, iparams) {
 
 }
 
-function createUser(user_key, content, iparams) {
+function createUser(passData, iparams) {
   console.log("iparams", iparams);
   console.log("iparams", iparams.freshChat_key);
-  console.log("iparams", user_key);
-  console.log("iparams", content);
+  console.log("iparams", passData.user_key);
+  console.log("iparams", passData.content);
+
+
 
   // let user_key = user_key
   // let content = content
@@ -95,9 +99,24 @@ function createUser(user_key, content, iparams) {
       "Content-Type": "application/json"
     },
     isOAuth: true,
-    json: {
-      "reference_id": user_key
+    json:
+    {
+      // "avatar": {
+      //   "url": passData.avatar
+      // },
+      // "email": passData.email,
+      // "first_name": passData.first_name,
+      // "last_name": passData.last_name,
+      // "phone": passData.phone,
+      "properties": [
+        {
+          "name": "Identifier",
+          "value": passData.user_key
+        }
+      ],
+      "reference_id": passData.user_key
     }
+
   };
   console.log("requestOptions", requestOptions);
   console.log("requestUrl", requestUrl);
@@ -109,7 +128,7 @@ function createUser(user_key, content, iparams) {
     passData = {}
     passData.user_key = result.reference_id
     passData.userId = result.id
-    passData.content = content
+    passData.content = passData.content
 
     getUserConversationId(passData, iparams)
 
@@ -118,10 +137,6 @@ function createUser(user_key, content, iparams) {
   });
 
 }
-
-
-
-
 
 function searchUser(passData, iparams) {
   let user_key = passData.user_key
@@ -142,8 +157,74 @@ function searchUser(passData, iparams) {
     console.log("this is whole result from searchUser==1", result);
 
     console.log('result.users =====> 1', result.users);
+    // let userData = result.users
+    // console.log("userData", userData);
+    // let mapData = userData.map((item) => (item)
+    // )
+    // console.log(mapData)
+
+    // let propData = mapData.map((item) => (item.properties)
+    // )
+    // let prop = propData[0].map((item) => (item))
+    // console.log(prop)
+
+    // let name1 = prop.map((item) => (item.name))
+    // console.log(name1.toString())
+    // let propertiesName = name1.toString()
+
+    // let value1 = prop.map((item) => (item.value))
+    // console.log(value1.toString())
+    // let propertiesValue = value1.toString()
+
+    // let reference_id = mapData.map((item) => (item.reference_id)
+    // )
+    // console.log(reference_id[0])
+    // let user_key = reference_id[0]
+
+    // let avatarData = mapData.map((item) => (item.avatar.url)
+    // )
+    // console.log(avatarData[0]);
+    // let avatar = avatarData[0]
+
+    // let firstName = mapData.map((item) => (item.first_name)
+    // )
+    // console.log(firstName[0]);
+
+    // let first_name = firstName[0]
+
+    // let lastName = mapData.map((item) => (item.last_name)
+    // )
+    // console.log(lastName[0]);
+
+    // let last_name = lastName[0]
+
+    // let email = mapData.map((item) => (item.email)
+    // )
+
+    // console.log(email[0]);
+
+    // let emailId = email[0]
+
+    // let phone = mapData.map((item) => (item.phone)
+    // )
+
+    // console.log(phone[0]);
+
+    // let PhoneNumber = phone[0]
+
+    let passData = {}
+    passData.user_key = user_key
+    passData.content = content
+    // passData.first_name = first_name
+    // passData.last_name = last_name
+    // passData.email = emailId
+    // passData.phone = PhoneNumber
+    // passData.avatar = avatar
+    // passData.propertiesName = "referance_Id"
+    // passData.propertiesValue = user_key
+
     if (result.users.length === 0) {
-      createUser(user_key, content, iparams)
+      createUser(passData, iparams)
     } else {
       let userlist = (result.users.reverse());
       let userArr = (userlist[0]);
@@ -268,10 +349,6 @@ function sendMessageToAgent(payload, iparams) {
 
 }
 
-
-
-
-
 function searchUserForAgent(payload, iparams) {
   console.log("searchUserForAgent", payload, iparams);
   let userId = payload.user_id;
@@ -319,10 +396,18 @@ function sendMessageToUser(payload) {
       "sender_key": payload.sender_key,
       // "serial_number": "2912789790723111230",
       "serial_number": time,
-      "message_type": "TX",
-      "message": payload.message_content
+      "message_type": payload.message_type,
     }
+
   };
+
+  if (payload.message_type === "tx") {
+    json.message = payload.message_content
+  } else if (payload.message_type === "Im") {
+    json.image_url = payload.message_content
+  }
+
+
   console.log("sendMessageToUser", requestOptions);
   $request.post(requestUrl, requestOptions).then(function (data) {
 
@@ -332,7 +417,7 @@ function sendMessageToUser(payload) {
   });
 }
 
-
+const endpoint = 'https://kakao-api.happytalk.io/v1/center/domain/update'
 
 exports = {
   /**
@@ -340,6 +425,7 @@ exports = {
     
   * @param {object} args - payload
   */
+
   onAppInstallCallback: async function (payload) {
     console.log("onapp install", payload);
     let thirdPartyEndpoint = payload.iparams.webhook_url
@@ -371,6 +457,83 @@ exports = {
     // }
     // renderData();
   },
+  // onAppInstallCallback: async function (payload) {
+  //   console.log("onapp install", payload);
+  //   let thirdPartyEndpoint = payload.iparams.webhook_url
+  //   console.log("this is third party endpoint", thirdPartyEndpoint);
+  //   // try {
+  //   const webhook = await generateTargetUrl();
+  //   // const options = {
+  //   //   // body: `{'webhook': ${webhook}}`,
+  //   //   // action: 'register',
+  //   //   // json: {
+  //   //   //   //   user_key: payload.data.user_key,
+  //   //   //   //   session_id: payload.data.session_id,
+  //   //   //   //   sender_key: payload.data.sender_key,
+  //   //   //   //   time: payload.data.time,
+  //   //   //   //   serial_number: payload.data.serial_number,
+  //   //   //   //   type: payload.data.type,
+  //   //   //   //   content: payload.data.content
+  //   //   // }
+  //   // };
+  //   // const { response } = await $request.post(options);
+
+  //   console.info('\n Webhook creation successful \n', webhook);
+  //   // console.info('\n Webhook Registration Successful \n', response);
+  //   console.info('\n Hander received following payload when app is installed \n\n', payload);
+  //   renderData();
+
+  //   // } catch (error) {
+  //   //   console.error('Something went wrong. Webhook Registration has failed', error);
+  //   // }
+  //   // renderData();
+  // },
+
+  // onAppInstallCallback: async function (payload) {
+  //     try {
+  //       const webhook = await generateTargetUrl();
+  //       const options = {
+  //         headers: {
+  //           "HT-Client-Id": payload.iparams.Kakao_Client_ID,
+  //           "HT-Client-Secret": payload.iparams.Kakao_Client_Secret
+  //         },
+  //         json: {
+  //           domain: "https://bfzyifbc8l.execute-api.us-east-1.amazonaws.com",
+  //           sender_key: payload.iparams.Kakao_Sender_Key
+  //         }
+  //       }
+  //       const { response } = await $request.post(endpoint, options);
+
+  //       console.info('\n Webhook creation successful \n', webhook);
+  //       console.info('\n Webhook Registration Successful \n', response);
+  //       console.info('\n options \n', options);
+  //       // console.info('\n Hander received following payload when app is installed \n\n', payload);
+
+  //       renderData();
+  //     } catch (error) {
+  //       console.error('Something went wrong. Webhook Registration has failed');
+  //     }
+  //     renderData();
+  //   },
+  // generateTargetUrl().done(function (targetUrl) {
+  //   console.log("targetUrl: " + targetUrl);
+  //   $request.post(
+  //     "https://kakao-api.happytalk.io/v1/center/domain/update",
+  //     {
+  //       headers: {
+  //         "HT-Client-Id": payload.iparams.Kakao_Client_ID,
+  //         "HT-Client-Secret": payload.iparams.Kakao_Client_Secret
+  //       },
+  //       json: {
+  //         // domain: "https://bfzyifbc8l.execute-api.us-east-1.amazonaws.com/default/kakaoTalk",
+  //         domain: targetUrl,
+  //         sender_key: payload.iparams.Kakao_Sender_Key,
+  //       }
+  //     }
+  //   )
+  //   renderData();
+  // })
+  // },
   /**
   * Handler for onAppUninstall event
   *
@@ -482,7 +645,7 @@ exports = {
             "message_parts": [
               {
                 "text": {
-                  "content": "hey dude!!"
+                  "content": "welcome to Freshwork support!!"
                 }
               }
             ]
@@ -524,7 +687,43 @@ exports = {
     let messageArrparts = messageData.map((item) => (item.message_parts));
     console.log("messageArrparts", messageArrparts);
 
+    let messagePartData = messageArrparts.map((item) => (item[0]));
+    console.log("messagePartData", messagePartData);
+    let messageDataString = messagePartData.toString()
+    console.log("messageDataString", messageDataString);
 
+
+    let output = {};
+    messagePartData.forEach(data => {
+      if (data.text && data.text.content) {
+        output.text_content = data.text.content;
+      }
+      if (data.file && data.file.url) {
+        output.file_url = data.file.url;
+      }
+      if (data.image && data.image.url) {
+        output.image_url = data.image.url;
+      }
+    });
+
+    console.log(output)
+
+
+    let contentType = {};
+    messagePartData.forEach(data => {
+      if (data.text !== null) {
+        contentType.text = 'TX';
+
+      } else if (data.file !== null) {
+        contentType.file = 'file';
+
+      } else if (data.image !== null) {
+        contentType.image = 'IM';
+
+      } else {
+        contentType.others = 'other';
+      }
+    })
 
     // 1
     let messageArrUserId = messageData.map((item) => (item.user_id));
@@ -539,21 +738,13 @@ exports = {
     console.log("messageArrActorType", messageArrActorType.toString());
     let actor_type = messageArrActorType.toString()
     // 4
-    let messageArrMessageType = messageData.map((item) => (item.message_type));
-    console.log("messageArrMessageType", messageArrMessageType.toString());
-    let message_type = messageArrMessageType.toString()
+    // let messageArrMessageType = messageData.map((item) => (item.message_type));
+    // console.log("messageArrMessageType", messageArrMessageType.toString());
+    // let message_type = messageArrMessageType.toString()
     // 5
-    let messageArrContent = messageData.map((item) => (item.full_message_text));
-    console.log("messageArrContent", messageArrContent.toString());
-    let messageContent = messageArrContent.toString()
-
-
-
-
-
-
-
-
+    // let messageArrContent = messageData.map((item) => (item.full_message_text));
+    // console.log("messageArrContent", messageArrContent.toString());
+    // let messageContent = messageArrContent.toString()
 
 
 
@@ -561,19 +752,24 @@ exports = {
     // console.log("messageParts", messageParts);
 
     // let message = messageArr.toString();
+
+
+
+    console.log("this is " + contentType);
     let passData = {}
     // 1
     passData.user_id = user_id
     passData.conversation_id = conversation_id
     passData.actor_type = actor_type
-    passData.message_type = message_type
-    passData.content = messageContent
+    passData.content = output.text_content || output.image_url || output.file_url
+    passData.message_type = contentType.text || contentType.image || contentType.file
     passData.client_id = payload.iparams.Kakao_Client_ID;
     passData.client_secret = payload.iparams.Kakao_Client_Secret;
     passData.sender_key = payload.iparams.Kakao_Sender_Key
     if (actor_type == "agent") {
       searchUserForAgent(passData, iparams)
     }
+
 
   }
 };

@@ -1,7 +1,7 @@
 {
   "freshchat_domain": {
     "display_name": "Freshchat domain",
-    "description": "Please enter Freshchat subdomain - Example: https://yourdomain.freshdesk.com",
+    "description": "Please enter Freshchat subdomain - Example:https://yourdomain.freshdesk.com",
     "type": "text",
     "required": true
   },
@@ -45,5 +45,23 @@
     "type": "text",
     "secure": true,
     "required": true
+  },
+  "channel_list": {
+    "display_name": "Select a channel",
+    "description": "Please select a channel from the list",
+    "type": "dropdown",
+    "required": true,
+    "events": [{ "change": "chennalList" }],
+    "options": ["opt1", "opt2", "opt3"],
+    "default_value": "opt1"
+  },
+  "group_list": {
+    "display_name": "Select a Group",
+    "description": "Please select a group from the list",
+    "type": "dropdown",
+    "required": true,
+    "events": [{ "change": "groupList" }],
+    "options": ["opt1", "opt2", "opt3"],
+    "default_value": "opt1"
   }
 }

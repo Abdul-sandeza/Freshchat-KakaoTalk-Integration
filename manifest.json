@@ -32,7 +32,8 @@
     "https://*.amazonaws.com",
     "https://*.ngrok.io",
     "https://*.cloudfront.net",
-    "https://*.freshworks.com"
+    "https://*.freshworks.com",
+    "https://*.myfreshworks.com"
   ],
   "engines": {
     "node": "14.0.0",
