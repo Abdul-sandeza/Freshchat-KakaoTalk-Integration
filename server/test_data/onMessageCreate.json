@@ -8,8 +8,8 @@
     "conversation": {
       "message_parts": [
         {
-          "text": {
-            "content": " sample message"
+          "image": {
+            "image_url": "https://fc-aps1-00-pics-bkt-00.s3.ap-south-1.amazonaws.com/eec6aa60a044a3941dd2502f0989ba819b65fad2b713c7e036a64dc231a63aec/f_marketingpicFull/u_e5a222a821661099c9e1f1050ab50c315511ad60e1b3e1f830c511eb26c9a53c/img_tcgsfp8bpf_99a3fb32426f09ef3c4752b92211331485114ded81ba214b384857161ccff078.png"
           }
         }
       ],

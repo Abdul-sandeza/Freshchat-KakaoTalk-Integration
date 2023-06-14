@@ -1,13 +1,13 @@
 {
   "platform-version": "2.2",
+  "dependencies": {
+    "request": "2.72.0"
+  },
   "product": {
     "freshchat": {
       "events": {
         "onAppInstall": {
           "handler": "onAppInstallCallback"
-        },
-        "onAppUninstall": {
-          "handler": "onAppUninstallCallback"
         },
         "onExternalEvent": {
           "handler": "onExternalEventCallback"
@@ -33,10 +33,12 @@
     "https://*.ngrok.io",
     "https://*.cloudfront.net",
     "https://*.freshworks.com",
-    "https://*.myfreshworks.com"
+    "https://*.myfreshworks.com",
+    "https://*.execute-api.us-east-1.amazonaws.com",
+    "https://api.sampleapis.com"
   ],
   "engines": {
-    "node": "14.0.0",
-    "fdk": "8.6.6"
+    "node": "14.17.3",
+    "fdk": "8.6.7"
   }
 }
