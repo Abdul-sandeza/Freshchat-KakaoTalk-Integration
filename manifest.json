@@ -1,8 +1,5 @@
 {
   "platform-version": "2.2",
-  "dependencies": {
-    "request": "2.72.0"
-  },
   "product": {
     "freshchat": {
       "events": {
@@ -37,6 +34,7 @@
     "https://*.execute-api.us-east-1.amazonaws.com",
     "https://api.sampleapis.com"
   ],
+  "dependencies": { "axios": "1.6.7" },
   "engines": {
     "node": "14.17.3",
     "fdk": "8.6.7"

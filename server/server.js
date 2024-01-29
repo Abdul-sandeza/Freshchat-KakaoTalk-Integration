@@ -1,4 +1,11 @@
-var request = require('request')
+// var request = require('request')
+// const FormData = require('form-data')
+
+// var request = require('request')
+var axios = require('axios')
+// var FormData = require('form-data')
+// var readFileSync = require('fs')
+// const fetch = require('node-fetch')
 
 function createConversation(user_id, message_content, message_type, iparams) {
   let user_key = user_id
@@ -326,7 +333,8 @@ function getUserConversationId(passData, iparams) {
 
 function getConversationDetails(value, iparams) {
   console.log('conversation Id 3', value)
-  var conversation_id = value.conversationId
+  var consversationIdList = value.conversationId.split(',').reverse()
+  var conversation_id = consversationIdList[0]
   console.log('conversation_id 3', conversation_id)
   console.log('conversation_id 3', conversation_id)
   const requestUrl = `${iparams.freshchat_domain}/v2/conversations/${conversation_id}`
@@ -466,6 +474,7 @@ function searchUserForAgent(payload, iparams) {
   let userId = payload.user_id
   let message_type = payload.message_type
   let message_content = payload.content
+  let freshchat_message_type = payload.freshchat_message_type
   const requestUrl = `${iparams.freshchat_domain}/v2/users/${userId}`
   console.log('request url: for searchUser from agent message', requestUrl)
   const requestOptions = {
@@ -484,6 +493,7 @@ function searchUserForAgent(payload, iparams) {
       passData.message_type = message_type
       passData.message_content = message_content
       passData.client_id = payload.client_id
+      passData.freshchat_message_type = freshchat_message_type
       passData.client_secret = payload.client_secret
       passData.sender_key = payload.sender_key
       console.log('pass data =searchUserForAgent', passData)
@@ -502,154 +512,283 @@ function sendMessageToUser(payload) {
     'payload from sendMessageToUser message type',
     payload.message_type
   )
+  console.log(
+    'payload from sendMessageToUser freshchat_message_type',
+    payload.freshchat_message_type
+  )
+
+  let fc_message_type = payload.freshchat_message_type.toString()
+  console.log('fc_message_type', fc_message_type)
+
   const d = new Date()
   let time = d.getTime().toString()
 
-  if (payload.message_type == 'TX') {
-    console.log('type TX')
+  if (fc_message_type == 'normal') {
+    if (payload.message_type == 'TX') {
+      console.log('type TX')
 
-    const requestUrl = `https://kakao-api.happytalk.io/v1/chat/write`
-    const requestOptions = {
-      headers: {
-        'Content-Type': 'application/json',
-        'HT-Client-Id': payload.client_id,
-        'HT-Client-Secret': payload.client_secret,
-      },
-      json: {
-        user_key: payload.user_key,
-        sender_key: payload.sender_key,
-        serial_number: time,
-        message_type: payload.message_type,
-        message: payload.message_content,
-      },
-    }
-
-    console.log('sendMessageToUser', requestOptions)
-    $request.post(requestUrl, requestOptions).then(
-      function (data) {
-        console.log('message sent to user', data.response)
-      },
-      function (err) {
-        console.log('Failed to send message - ')
-        console.log('Failed to send message - ', JSON.stringify(err))
-      }
-    )
-  } else if (payload.message_type == 'IM') {
-    console.log('type IM')
-
-    const uploadUrl = `https://kakao-api.happytalk.io/v1/image/upload`
-
-    const options = {
-      headers: {
-        'HT-Client-Id': payload.clientId,
-        'HT-Client-secret': payload.clientSecret,
-        'Content-Type':
-          "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW'",
-        Cookie: 'SERVERID=nks-pool-1320-w-kfc',
-      },
-      formData: {
-        sender_key: payload.sender_key,
-        image: {
-          value:
-            'C:UserssandeDesktopKakao-freshchat FDK 8configassetsKakao-Fresh chat Architecture.png',
-          options: {
-            filename: 'image.png',
-            contentType: null,
-          },
+      const requestUrl = `https://kakao-api.happytalk.io/v1/chat/write`
+      const requestOptions = {
+        headers: {
+          'Content-Type': 'application/json',
+          'HT-Client-Id': payload.client_id,
+          'HT-Client-Secret': payload.client_secret,
         },
-      },
-    }
-
-    console.log('image ', options)
-
-    $request.post(uploadUrl, options).then(
-      function (data) {
-        console.log('message sent to user image', data.response)
-      },
-      function (err) {
-        console.log('Failed to send message - image ')
-        console.log('Failed to send message - image ', JSON.stringify(err))
+        json: {
+          user_key: payload.user_key,
+          sender_key: payload.sender_key,
+          serial_number: time,
+          message_type: payload.message_type,
+          // message_type: 'private',
+          message: payload.message_content,
+        },
       }
-    )
 
-    // const uploadURL = `https://kakao-api.happytalk.io/v1/image/upload`
+      console.log('sendMessageToUser', requestOptions)
+      $request.post(requestUrl, requestOptions).then(
+        function (data) {
+          console.log('message sent to user', data.response)
+        },
+        function (err) {
+          console.log('Failed to send message - ')
+          console.log('Failed to send message - ', JSON.stringify(err))
+        }
+      )
+    } else if (payload.message_type == 'IM') {
+      console.log('type IM', payload)
 
-    // var requestOptions = {
-    //   headers: {
-    //     'HT-Client-Id': 'cFUbwXGTIfLLesR2',
-    //     'HT-Client-secret': 'BRUlWlZNQt',
-    //     // 'Content-Type':
-    //     //   "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW'",
-    //   },
-    //   json: {
-    //     sender_key: payload.sender_key,
-    //     message_type: payload.message_type,
-    //   },
-    // }
+      const uploadUrl = 'https://kakao-api.happytalk.io/v1/image/upload'
+      const imageUrl = payload.message_content
+      console.log('Fetching image from:', imageUrl)
 
-    // $request.post(uploadURL, requestOptions).then(
-    //   function (data) {
-    //     console.log('message sent to user===>1', data)
-    //     console.log('message sent to user===>2', data.response)
-    //   },
-    //   function (err) {
-    //     console.log('Failed to send message - ')
-    //     console.log('Failed to send message - ', JSON.stringify(err))
-    //   }
-    // )
+      // Fetch the image from the provided URL
+      axios
+        .get(imageUrl, { responseType: 'arraybuffer' })
+        .then((response) => {
+          console.log('Image fetch response:', response)
 
-    // const requestUrl = `https://kakao-api.happytalk.io/v1/chat/write`
+          if (response.status === 200) {
+            console.log('Image fetched successfully.')
 
-    // const requestOptions = {
-    //   headers: {
-    //     'HT-Client-Id': payload.client_id,
-    //     'HT-Client-Secret': payload.client_secret,
-    //   },
-    //   json: {
-    //     user_key: payload.user_key,
-    //     sender_key: payload.sender_key,
-    //     serial_number: time,
-    //     message_type: payload.message_type,
-    //     image_url: payload.message_content,
-    //   },
-    // }
+            // Log the content type to ensure it's an image
+            console.log('Content-Type:', response.headers['content-type'])
 
-    // console.log('sendMessageToUser requestOptions', requestOptions)
-    // $request.post(requestUrl, requestOptions).then(
-    //   function (data) {
-    //     console.log('message sent to user', data.response)
-    //   },
-    //   function (err) {
-    //     console.log('Failed to send message - ')
-    //     console.log('Failed to send message - ', JSON.stringify(err))
-    //   }
-    // )
-  } else if (payload.message_type == 'file') {
-    console.log('type file')
-    const requestUrl = `https://kakao-api.happytalk.io/v1/file/upload`
+            // Use the response.data as the body for the POST request
+            const options = {
+              method: 'POST',
+              url: uploadUrl,
+              headers: {
+                'HT-Client-Id': 'cFUbwXGTIfLLesR2',
+                'HT-Client-Secret': 'BRUlWlZNQt',
+                'Content-Type':
+                  'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW',
+              },
+              data: {
+                sender_key: '3fd538ef7218a14a63e51ba47e83c76e1ff5ab62',
+                image_type: 'link',
+                image: {
+                  value: response.data,
+                  options: {
+                    filename: 'image.jpg',
+                    contentType: 'image/jpeg', // Change to the appropriate content type
+                  },
+                },
+              },
+            }
 
-    const requestOptions = {
-      headers: {
-        'HT-Client-Id': payload.client_id,
-        'HT-Client-Secret': payload.client_secret,
-        'Content-Type':
-          "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW'",
-      },
-      formData: {
-        sender_key: payload.sender_key,
-        file: payload.message_content,
-      },
-    }
-    console.log('sendMessageToUser requestOptions', requestOptions)
-    $request.post(requestUrl, requestOptions).then(
-      function (data) {
-        console.log('message sent to user', data.response)
-      },
-      function (err) {
-        console.log('Failed to send message - ')
-        console.log('Failed to send message - ', JSON.stringify(err))
+            // Make the request to upload the image
+            axios(options)
+              .then((uploadResponse) => {
+                console.log('Upload result:', uploadResponse.data)
+              })
+              .catch((uploadError) => {
+                console.error('Error uploading image:', uploadError)
+              })
+          } else {
+            console.error('Error fetching image. Status:', response.status)
+          }
+        })
+        .catch((error) => {
+          console.error('Error fetching image:', error)
+        })
+
+      // $request
+      //   .get(imageUrl, { responseType: 'arraybuffer' }) // Set responseType to arraybuffer
+      //   .then((response) => {
+      //     console.log('Image fetch response:', response)
+
+      //     if (response.success) {
+      //       console.log('Image fetched successfully.')
+
+      //       // Set up headers
+      //       const headers = {
+      //         'HT-Client-Id': payload.client_id,
+      //         'HT-Client-Secret': payload.client_secret,
+      //         'Content-Type':
+      //           'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW', // Adjust as needed
+      //       }
+
+      //       // Set up request options
+      //       const requestOptions = {
+      //         method: 'POST',
+      //         headers: headers,
+      //         body: response.body, // Use the binary data directly
+      //       }
+
+      //       console.log('Uploading image to:', uploadUrl)
+
+      //       // Make the request to upload the image
+      //       $request
+      //         .post(uploadUrl, requestOptions)
+      //         .then((uploadResponse) => {
+      //           console.log('Image upload response:', uploadResponse)
+
+      //           if (uploadResponse.success) {
+      //             console.log('Upload result:', uploadResponse.response)
+      //           } else {
+      //             console.error(
+      //               'Error uploading image:',
+      //               uploadResponse.response
+      //             )
+      //           }
+      //         })
+      //         .catch((error) => {
+      //           console.error('Error uploading image:', error)
+      //         })
+      //     } else {
+      //       console.error('Error fetching image:', response.response)
+      //     }
+      //   })
+      //   .catch((error) => {
+      //     console.error('Error fetching image:', error)
+      //   })
+
+      // const s3BucketUrl = payload.message_content
+      // try {
+      //   var localFilePath = path.join(process.cwd(), 'downloaded_file.jpg')
+
+      //   // Rest of your code for file operations
+      // } catch (error) {
+      //   console.error('Error:', error)
+      // }
+      // // Adjust the file extension if needed
+      // console.log('loads', s3BucketUrl, localFilePath)
+      // // Use Axios to download the file
+      // // Use Axios to download the file
+      // $http
+      //   .get(s3BucketUrl, {
+      //     headers: {
+      //       'Content-Type': 'application/json', // Add other headers if needed
+      //     },
+      //     responseType: 'arraybuffer', // Set responseType to 'arraybuffer'
+      //   })
+      //   .then((response) => {
+      //     // Write the binary data to a local file
+      //     fs.writeFile(
+      //       localFilePath,
+      //       Buffer.from(response.data),
+      //       'binary',
+      //       (err) => {
+      //         if (err) {
+      //           console.error('Error writing to file:', err)
+      //         } else {
+      //           console.log('File written successfully.')
+      //         }
+      //       }
+      //     )
+
+      //     // Optionally, you can handle events like 'end' and 'error' if needed
+      //     response.on('end', () => {
+      //       console.log('File downloaded successfully.')
+      //     })
+
+      //     response.on('error', (err) => {
+      //       console.error('Error downloading file:', err.message)
+      //     })
+      //   })
+      //   .catch((error) => {
+      //     if (error.response) {
+      //       // The request was made, but the server responded with a status code outside the range of 2xx
+      //       console.error(
+      //         'Server responded with an error:',
+      //         error.response.status,
+      //         error.response.statusText
+      //       )
+      //       console.error('Response data:', error.response.data)
+      //     } else if (error.request) {
+      //       // The request was made but no response was received
+      //       console.error('No response received from the server')
+      //     } else {
+      //       // Something happened in setting up the request that triggered an Error
+      //       console.error('Error setting up the request:', error.message)
+      //     }
+      //     console.error('Error fetching S3 file:', error.config.url)
+      //   })
+
+      // const uploadUrl = `https://kakao-api.happytalk.io/v1/image/upload`
+
+      // // Fetch the image from the provided URL
+      // const imageUrl = payload.message_content
+
+      // console.log('imageurl')
+      // // Fetch the image as binary data
+      // var myHeaders = new Headers()
+      // myHeaders.append('HT-Client-Id', payload.client_id) // Replace with your client ID
+      // myHeaders.append('HT-Client-secret', payload.client_secret) // Replace with your client secret
+      // // myHeaders.append('Content-Type', 'multipart/form-data')
+
+      // var formdata = new FormData()
+      // formdata.append('sender_key', payload.sender_key) // Replace with your sender key
+      // formdata.append('image_type', 'link')
+
+      // // Replace "imageUrl" with the actual URL of the image you want to use.
+
+      // // Fetch the image from the URL and add it to the FormData.
+      // fetch(imageUrl)
+      //   .then((response) => response.blob())
+      //   .then((blob) => {
+      //     formdata.append('image', blob, 'image.jpg')
+
+      //     var requestOptions = {
+      //       method: 'POST',
+      //       headers: myHeaders,
+      //       body: formdata,
+      //       redirect: 'follow',
+      //     }
+
+      //     fetch(uploadUrl, requestOptions)
+      //       .then((response) => response.json())
+      //       .then((result) => console.log('result', result))
+      //       .catch((error) => console.log('error', error))
+      //   })
+      //   .catch((error) => console.log('error', error))
+    } else if (payload.message_type == 'file') {
+      console.log('type file')
+      const requestUrl = `https://kakao-api.happytalk.io/v1/file/upload`
+
+      const requestOptions = {
+        headers: {
+          'HT-Client-Id': payload.client_id,
+          'HT-Client-Secret': payload.client_secret,
+          'Content-Type':
+            "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW'",
+        },
+        formData: {
+          sender_key: payload.sender_key,
+          file: payload.message_content,
+        },
       }
-    )
+      console.log('sendMessageToUser requestOptions', requestOptions)
+      $request.post(requestUrl, requestOptions).then(
+        function (data) {
+          console.log('message sent to user', data.response)
+        },
+        function (err) {
+          console.log('Failed to send message - ')
+          console.log('Failed to send message - ', JSON.stringify(err))
+        }
+      )
+    }
   }
 }
 
@@ -678,8 +817,12 @@ exports = {
       json: {
         sender_key: payload.iparams.Kakao_Sender_Key,
         domain: webhook,
-        clientId: payload.iparams.Kakao_Client_ID,
-        clientSecret: payload.iparams.Kakao_Client_Secret,
+        //static key
+        // clientId: payload.iparams.Kakao_Client_ID,
+        // clientSecret: payload.iparams.Kakao_Client_Secret,
+
+        clientId: 'cFUbwXGTIfLLesR2',
+        clientSecret: 'BRUlWlZNQt',
       },
     }
     console.log('This is ===', requestOptions)
@@ -748,6 +891,37 @@ exports = {
         : externalData.content
     console.log('passdata: external event ', passData)
     searchUser(passData, iparams)
+
+    const requestUrl =
+      'https://d9bc7dwox1.execute-api.us-east-1.amazonaws.com/default/dashbaord-details'
+
+    const requestOptions = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      json: {
+        //kakaoTalk payload
+        kakaoTalkUserkey: externalData.data.user_key,
+        kakaoTalkSessionId: externalData.session_id,
+        kakaoTalkSenderKey: externalData.sender_key,
+        sessionStartTime: externalData.data.time,
+        kakaTalkSerialNumber: externalData.data.serial_number,
+        eventType: externalData.event,
+        kakaoTalkBusinessId: externalData.iparams.Kakao_Account_Id,
+        freshChatAccountId: externalData.account_id,
+        freshChatDomainName: externalData.domain,
+      },
+    }
+
+    $request.post(requestUrl, requestOptions).then(
+      function (data) {
+        console.log('app installed', data.response)
+      },
+      function (err) {
+        console.log('Failed to onAppInstallCallback - ')
+        console.log('Failed to onAppInstallCallback - ', JSON.stringify(err))
+      }
+    )
   },
   onUserCreateCallback: async function (payload) {
     var domain = payload.iparams.freshchat_domain
@@ -852,6 +1026,9 @@ exports = {
     let messageArr = messageData.map((item) => item)
     console.log('messageArr', messageArr)
 
+    let freshchat_message_type = messageArr.map((item) => item.message_type)
+    console.log('freshchat_message_type', freshchat_message_type.toString())
+
     let messageArrparts = messageData.map((item) => item.message_parts)
     console.log('messageArrparts', messageArrparts)
 
@@ -914,8 +1091,14 @@ exports = {
       output.text_content || output.image_url || output.file_url
     passData.message_type =
       contentType.text || contentType.image || contentType.file
-    passData.client_id = payload.iparams.Kakao_Client_ID
-    passData.client_secret = payload.iparams.Kakao_Client_Secret
+    //static key
+    // passData.client_id = payload.iparams.Kakao_Client_ID
+    // passData.client_secret = payload.iparams.Kakao_Client_Secret
+
+    passData.client_id = 'cFUbwXGTIfLLesR2'
+    passData.client_secret = 'BRUlWlZNQt'
+
+    passData.freshchat_message_type = freshchat_message_type
     passData.sender_key = payload.iparams.Kakao_Sender_Key
     if (actor_type == 'agent') {
       searchUserForAgent(passData, iparams)

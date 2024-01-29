@@ -45,6 +45,52 @@
       >
         <h3>Kakao and Freshchat Configuration Page</h3>
 
+        <h4>Enter KakaoTalk credentials of your channel</h4>
+        <!-- <fw-input
+          label="Kakao webhook URL"
+          icon-right="web"
+          required
+          class="webhook_url"
+          placeholder="Please enter your Kakao webhook URL"
+        ></fw-input> -->
+
+        <!--   //required client -->
+        <!-- <fw-input
+          label="ID for the Kakao Client"
+          icon-right="id"
+          required
+          id="Kakao_Client_ID"
+          placeholder="This can be retrieved with the help of HappyTalk(e.g.: IA2drtaL5KP3ezci)"
+        ></fw-input>
+        <fw-input
+          label="Secret for the Kakao Client"
+          icon-right="key"
+          required
+          class="Kakao_Client_Secret"
+          id="Kakao_Client_Secret"
+          type="password"
+          placeholder="This can be retrieved with the help of HappyTalk(e.g.: JT7zqnVY6I)"
+        ></fw-input> -->
+        <!-- 
+        //rquired channel -->
+        <fw-input
+          label="Id for the business’s Channel on Kakao"
+          icon-right="account"
+          required
+          id="Kakao_Account_Id"
+          placeholder="This is an Id for Kakao Business account channel(e.g.: @accountname1000)"
+        ></fw-input>
+        <fw-input
+          label="Id for the Kakao Channel chat entity/user"
+          icon-right="key"
+          required
+          id="Kakao_Sender_Key"
+          type="password"
+          placeholder="This can be retrieved with the help of HappyTalk(e.g.: 5759a63c620431c819b3987029b9cf56adb7d250)"
+        ></fw-input>
+
+        <hr />
+
         <h4>Enter Freshchat Credentials of your account</h4>
         <div class="alert alert-danger" id="danger-message"></div>
 
@@ -53,7 +99,6 @@
           icon-right="domain"
           type="url"
           required
-          class="freshchat_domain"
           id="freshchat_domain"
           placeholder=" Please enter Freshchat subdomain - Example:https://yourdomain.freshdesk.com"
         ></fw-input>
@@ -75,61 +120,14 @@
           label="Freshchat APP ID"
           icon-right="id"
           required
-          class="freshchat_app_id"
           id="freshchat_app_id"
           placeholder="Please enter Freshchat APP ID - Example:4c5njds2-4233-4a62-abf2-7d24485b111e"
-        ></fw-input>
-
-        <hr />
-
-        <h4>Enter KakaoTalk credentials of your channel</h4>
-        <!-- <fw-input
-          label="Kakao webhook URL"
-          icon-right="web"
-          required
-          class="webhook_url"
-          placeholder="Please enter your Kakao webhook URL"
-        ></fw-input> -->
-        <fw-input
-          label="ID for the Kakao Client"
-          icon-right="id"
-          required
-          class="Kakao_Client_ID"
-          id="Kakao_Client_ID"
-          placeholder="This can be retrieved with the help of HappyTalk(e.g.: IA2drtaL5KP3ezci)"
-        ></fw-input>
-        <fw-input
-          label="Secret for the Kakao Client"
-          icon-right="key"
-          required
-          class="Kakao_Client_Secret"
-          id="Kakao_Client_Secret"
-          type="password"
-          placeholder="This can be retrieved with the help of HappyTalk(e.g.: JT7zqnVY6I)"
-        ></fw-input>
-        <fw-input
-          label="Id for the business’s Channel on Kakao"
-          icon-right="account"
-          required
-          class="Kakao_Account_Id"
-          id="Kakao_Account_Id"
-          placeholder="This is an Id for Kakao Business account channel(e.g.: @accountname1000)"
-        ></fw-input>
-        <fw-input
-          label="Id for the Kakao Channel chat entity/user"
-          icon-right="key"
-          required
-          class="Kakao_Sender_Key"
-          id="Kakao_Sender_Key"
-          type="password"
-          placeholder="This can be retrieved with the help of HappyTalk(e.g.: 5759a63c620431c819b3987029b9cf56adb7d250)"
         ></fw-input>
 
         <h4>Please select Channel and Group</h4>
 
         <fw-select
           id="channel_list"
-          class="channel_list"
           required
           label="Please select the channel"
           no-data-text="Type to search.."
@@ -142,8 +140,6 @@
 
         <fw-select
           id="group_list"
-          class="group_list"
-          required
           label="Please select the group"
           no-data-text="Type to search.."
           not-found-text="Not available in this Group list"
@@ -156,177 +152,177 @@
     </main>
     <script src="./assets/iparams.js"></script>
     <script>
-      let fc_freshchat_domain = document.querySelector('.freshchat_domain')
+      // let fc_freshchat_domain = document.querySelector('#freshchat_domain')
 
-      let fc_freshChat_key = document.querySelector('.freshChat_key')
-      let fc_freshchat_app_id = document.querySelector('.freshchat_app_id')
-      var freshchatAppIdPattern = new RegExp(/([A-Za-z0-9]+(-[A-Za-z0-9]+)+)/i)
+      // let fc_freshChat_key = document.querySelector('#freshChat_key')
+      // let fc_freshchat_app_id = document.querySelector('#freshchat_app_id')
+      // var freshchatAppIdPattern = new RegExp(/([A-Za-z0-9]+(-[A-Za-z0-9]+)+)/i)
 
-      fc_freshchat_app_id.addEventListener('blur', (e) => {
-        let value = e.target.value
-        let isValid = freshchatAppIdPattern.test(value)
+      // fc_freshchat_app_id.addEventListener('blur', (e) => {
+      //   let value = e.target.value
+      //   let isValid = freshchatAppIdPattern.test(value)
 
-        if (isValid) {
-          console.log('Input value is valid')
-          // Do something if the input value is valid
-        } else {
-          console.log('Enter a valid Freshchat APP ID')
-          // Do something if the input value is invalid
+      //   if (isValid) {
+      //     console.log('Input value is valid')
+      //     // Do something if the input value is valid
+      //   } else {
+      //     console.log('Enter a valid Freshchat APP ID')
+      //     // Do something if the input value is invalid
 
-          const errorElement = document.createElement('p')
-          errorElement.innerHTML = 'Enter a valid Freshchat APP ID'
-          errorElement.style.color = 'red'
-          document.body.appendChild(errorElement)
-        }
-      })
-      let fc_Kakao_Client_ID = document.querySelector('.Kakao_Client_ID')
-      var kakaoClientIdPattern = new RegExp(/[A-Za-z0-9]+/i)
+      //     const errorElement = document.createElement('p')
+      //     errorElement.innerHTML = 'Enter a valid Freshchat APP ID'
+      //     errorElement.style.color = 'red'
+      //     document.body.appendChild(errorElement)
+      //   }
+      // })
+      // let fc_Kakao_Client_ID = document.querySelector('#Kakao_Client_ID')
+      // var kakaoClientIdPattern = new RegExp(/[A-Za-z0-9]+/i)
 
-      fc_Kakao_Client_ID.addEventListener('blur', (e) => {
-        let value = e.target.value
-        let isValid = kakaoClientIdPattern.test(value)
+      // fc_Kakao_Client_ID.addEventListener('blur', (e) => {
+      //   let value = e.target.value
+      //   let isValid = kakaoClientIdPattern.test(value)
 
-        if (isValid) {
-          console.log('Input value is valid')
-          // Do something if the input value is valid
-        } else {
-          console.log('Enter a valid ID for the Kakao Client')
-          // Do something if the input value is invalid
+      //   if (isValid) {
+      //     console.log('Input value is valid')
+      //     // Do something if the input value is valid
+      //   } else {
+      //     console.log('Enter a valid ID for the Kakao Client')
+      //     // Do something if the input value is invalid
 
-          const errorElement = document.createElement('p')
-          errorElement.innerHTML = 'Enter a valid ID for the Kakao Client'
-          errorElement.style.color = 'red'
-          document.body.appendChild(errorElement)
-        }
-      })
+      //     const errorElement = document.createElement('p')
+      //     errorElement.innerHTML = 'Enter a valid ID for the Kakao Client'
+      //     errorElement.style.color = 'red'
+      //     document.body.appendChild(errorElement)
+      //   }
+      // })
 
-      let fc_Kakao_Client_Secret = document.querySelector(
-        '.Kakao_Client_Secret'
-      )
-      var kakaoClientSecretPattern = new RegExp(/[A-Za-z0-9]+/i)
+      // let fc_Kakao_Client_Secret = document.querySelector(
+      //   '#Kakao_Client_Secret'
+      // )
+      // var kakaoClientSecretPattern = new RegExp(/[A-Za-z0-9]+/i)
 
-      fc_Kakao_Client_Secret.addEventListener('blur', (e) => {
-        let value = e.target.value
-        let isValid = kakaoClientSecretPattern.test(value)
+      // fc_Kakao_Client_Secret.addEventListener('blur', (e) => {
+      //   let value = e.target.value
+      //   let isValid = kakaoClientSecretPattern.test(value)
 
-        if (isValid) {
-          console.log('Input value is valid')
-          // Do something if the input value is valid
-        } else {
-          console.log('Enter a valid Secret for the Kakao Client')
-          // Do something if the input value is invalid
+      //   if (isValid) {
+      //     console.log('Input value is valid')
+      //     // Do something if the input value is valid
+      //   } else {
+      //     console.log('Enter a valid Secret for the Kakao Client')
+      //     // Do something if the input value is invalid
 
-          const errorElement = document.createElement('p')
-          errorElement.innerHTML = 'Enter a valid Secret for the Kakao Client'
-          errorElement.style.color = 'red'
-          document.body.appendChild(errorElement)
-        }
-      })
-      let fc_Kakao_Account_Id = document.querySelector('.Kakao_Account_Id')
-      var kakaoAccountIdPattern = new RegExp(/@[A-Za-z]+[0-9]+/i)
+      //     const errorElement = document.createElement('p')
+      //     errorElement.innerHTML = 'Enter a valid Secret for the Kakao Client'
+      //     errorElement.style.color = 'red'
+      //     document.body.appendChild(errorElement)
+      //   }
+      // })
+      // let fc_Kakao_Account_Id = document.querySelector('#Kakao_Account_Id')
+      // var kakaoAccountIdPattern = new RegExp(/@[A-Za-z]+[0-9]+/i)
 
-      fc_Kakao_Account_Id.addEventListener('blur', (e) => {
-        let value = e.target.value
-        let isValid = kakaoAccountIdPattern.test(value)
+      // fc_Kakao_Account_Id.addEventListener('blur', (e) => {
+      //   let value = e.target.value
+      //   let isValid = kakaoAccountIdPattern.test(value)
 
-        if (isValid) {
-          console.log('Input value is valid')
-          // Do something if the input value is valid
-        } else {
-          console.log('Enter a valid Id for the business’s Channel on Kakao')
-          // Do something if the input value is invalid
+      //   if (isValid) {
+      //     console.log('Input value is valid')
+      //     // Do something if the input value is valid
+      //   } else {
+      //     console.log('Enter a valid Id for the business’s Channel on Kakao')
+      //     // Do something if the input value is invalid
 
-          const errorElement = document.createElement('p')
-          errorElement.innerHTML =
-            'Enter a valid Id for the business’s Channel on Kakao'
-          errorElement.style.color = 'red'
-          document.body.appendChild(errorElement)
-        }
-      })
-      let fc_Kakao_Sender_Key = document.querySelector('.Kakao_Sender_Key')
-      var kakaoSenderKeyPattern = new RegExp(/([0-9]+([A-Za-z]+[0-9]+)+)/i)
+      //     const errorElement = document.createElement('p')
+      //     errorElement.innerHTML =
+      //       'Enter a valid Id for the business’s Channel on Kakao'
+      //     errorElement.style.color = 'red'
+      //     document.body.appendChild(errorElement)
+      //   }
+      // })
+      // let fc_Kakao_Sender_Key = document.querySelector('#Kakao_Sender_Key')
+      // var kakaoSenderKeyPattern = new RegExp(/([0-9]+([A-Za-z]+[0-9]+)+)/i)
 
-      fc_Kakao_Sender_Key.addEventListener('blur', (e) => {
-        let value = e.target.value
-        let isValid = kakaoSenderKeyPattern.test(value)
+      // fc_Kakao_Sender_Key.addEventListener('blur', (e) => {
+      //   let value = e.target.value
+      //   let isValid = kakaoSenderKeyPattern.test(value)
 
-        if (isValid) {
-          console.log('Input value is valid')
-          // Do something if the input value is valid
-        } else {
-          console.log('Enter a valid Id for the Kakao Channel chat entity/user')
-          // Do something if the input value is invalid
+      //   if (isValid) {
+      //     console.log('Input value is valid')
+      //     // Do something if the input value is valid
+      //   } else {
+      //     console.log('Enter a valid Id for the Kakao Channel chat entity/user')
+      //     // Do something if the input value is invalid
 
-          const errorElement = document.createElement('p')
-          errorElement.innerHTML =
-            'Enter a valid Kakao Channel chat entity/user'
-          errorElement.style.color = 'red'
-          document.body.appendChild(errorElement)
-        }
-      })
-      const btnVerify = document.querySelector('#btnVerify')
-      // let channel_list = document.querySelector('.channel_list')
+      //     const errorElement = document.createElement('p')
+      //     errorElement.innerHTML =
+      //       'Enter a valid Kakao Channel chat entity/user'
+      //     errorElement.style.color = 'red'
+      //     document.body.appendChild(errorElement)
+      //   }
+      // })
+      // const btnVerify = document.querySelector('#btnVerify')
+      // // let channel_list = document.querySelector('.channel_list')
 
-      var fc_channel_list = document.getElementById('channel_list')
+      // var fc_channel_list = document.getElementById('channel_list')
 
-      const requestOptions = {
-        headers: {
-          Authorization: `Bearer btoa(freshChat_key.value)`,
-        },
-      }
+      // const requestOptions = {
+      //   headers: {
+      //     Authorization: `Bearer btoa(freshChat_key.value)`,
+      //   },
+      // }
 
-      fc_channel_list.addEventListener('click', (event) => {
-        var channelsUrl = `${freshchat_domain.value}/v2/channels`
-        const requestOptions = {
-          headers: {
-            Authorization: `Bearer ${freshChat_key.value}`,
-          },
-        }
-        var p = new Promise((resolve, reject) => {
-          client.request.get(channelsUrl, requestOptions).then((data) => {
-            let channelList = JSON.parse(data.response)
-            let allChannels = channelList.channels
-            let channelOptions = allChannels.map((channel) => ({
-              text: channel.name,
-              value: channel.id,
-            }))
-            resolve(channelOptions)
-          })
-        })
+      // fc_channel_list.addEventListener('click', (event) => {
+      //   var channelsUrl = `${freshchat_domain.value}/v2/channels`
+      //   const requestOptions = {
+      //     headers: {
+      //       Authorization: `Bearer ${freshChat_key.value}`,
+      //     },
+      //   }
+      //   var p = new Promise((resolve, reject) => {
+      //     client.request.get(channelsUrl, requestOptions).then((data) => {
+      //       let channelList = JSON.parse(data.response)
+      //       let allChannels = channelList.channels
+      //       let channelOptions = allChannels.map((channel) => ({
+      //         text: channel.name,
+      //         value: channel.id,
+      //       }))
+      //       resolve(channelOptions)
+      //     })
+      //   })
 
-        p.then((options) => {
-          channel_list.options = options
-        })
-      })
+      //   p.then((options) => {
+      //     channel_list.options = options
+      //   })
+      // })
 
-      let fc_group_list = document.getElementById('group_list')
+      // let fc_group_list = document.getElementById('group_list')
 
-      fc_group_list.addEventListener('click', (event) => {
-        var groupUrl = `${freshchat_domain.value}/v2/groups`
-        const requestOptions = {
-          headers: {
-            Authorization: `Bearer ${freshChat_key.value}`,
-          },
-        }
-        var p = new Promise((resolve, reject) => {
-          client.request.get(groupUrl, requestOptions).then((data) => {
-            console.log(data)
-            let groupList = JSON.parse(data.response)
-            console.log('groupList', groupList)
+      // fc_group_list.addEventListener('click', (event) => {
+      //   var groupUrl = `${freshchat_domain.value}/v2/groups`
+      //   const requestOptions = {
+      //     headers: {
+      //       Authorization: `Bearer ${freshChat_key.value}`,
+      //     },
+      //   }
+      //   var p = new Promise((resolve, reject) => {
+      //     client.request.get(groupUrl, requestOptions).then((data) => {
+      //       console.log(data)
+      //       let groupList = JSON.parse(data.response)
+      //       console.log('groupList', groupList)
 
-            let allGroups = groupList.groups
-            let groupOptions = allGroups.map((group) => ({
-              text: group.name,
-              value: group.id,
-            }))
-            resolve(groupOptions)
-          })
-        })
+      //       let allGroups = groupList.groups
+      //       let groupOptions = allGroups.map((group) => ({
+      //         text: group.name,
+      //         value: group.id,
+      //       }))
+      //       resolve(groupOptions)
+      //     })
+      //   })
 
-        p.then((options) => {
-          group_list.options = options
-        })
-      })
+      //   p.then((options) => {
+      //     group_list.options = options
+      //   })
+      // })
 
       function postConfigs() {
         return {
@@ -340,8 +336,8 @@
           freshchat_domain: fc_freshchat_domain.value,
           freshChat_key: fc_freshChat_key.value,
           freshchat_app_id: fc_freshchat_app_id.value,
-          Kakao_Client_ID: fc_Kakao_Client_ID.value,
-          Kakao_Client_Secret: fc_Kakao_Client_Secret.value,
+          // Kakao_Client_ID: fc_Kakao_Client_ID.value,
+          // Kakao_Client_Secret: fc_Kakao_Client_Secret.value,
           Kakao_Account_Id: fc_Kakao_Account_Id.value,
           Kakao_Sender_Key: fc_Kakao_Sender_Key.value,
           channel_list: fc_channel_list.value,
@@ -354,8 +350,8 @@
           freshchat_domain,
           freshChat_key,
           freshchat_app_id,
-          Kakao_Client_ID,
-          Kakao_Client_Secret,
+          // Kakao_Client_ID,
+          // Kakao_Client_Secret,
           Kakao_Account_Id,
           Kakao_Sender_Key,
           channel_list,
@@ -364,8 +360,8 @@
         fc_freshchat_domain.value = freshchat_domain
         fc_freshChat_key.value = freshChat_key
         fc_freshchat_app_id.value = freshchat_app_id
-        fc_Kakao_Client_ID.value = Kakao_Client_ID
-        fc_Kakao_Client_Secret.value = Kakao_Client_Secret
+        // fc_Kakao_Client_ID.value = Kakao_Client_ID
+        // fc_Kakao_Client_Secret.value = Kakao_Client_Secret
         fc_Kakao_Account_Id.value = Kakao_Account_Id
         fc_Kakao_Sender_Key.value = Kakao_Sender_Key
         fc_channel_list.value = channel_list
