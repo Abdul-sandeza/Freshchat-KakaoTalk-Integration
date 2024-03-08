@@ -1,13 +1,10 @@
 {
-  "platform-version": "2.2",
+  "platform-version": "2.3",
   "product": {
     "freshchat": {
       "events": {
         "onAppInstall": {
           "handler": "onAppInstallCallback"
-        },
-        "onAppUninstall": {
-          "handler": "onAppUninstallCallback"
         },
         "onExternalEvent": {
           "handler": "onExternalEventCallback"
@@ -21,22 +18,35 @@
         "onUserCreate": {
           "handler": "onUserCreateCallback"
         }
+      },
+      "requests": {
+        "createConversation": {},
+        "createUser": {},
+        "searchUser": {},
+        "getUserConversationId": {},
+        "getConversationDetails": {},
+        "updateConversationId": {},
+        "sendMessageToAgent": {},
+        "searchUserForAgent": {},
+        "sendMessageToUser": {},
+        "multimediaGateway": {},
+        "registerWebhook": {},
+        "dashboardGateway": {},
+        "createUserDetails": {},
+        "conversationCreateFromAgent": {},
+        "channelList": {},
+        "groupList": {},
+        "groupUrl": {},
+        "channelsUrl": {},
+        "verify": {}
       }
     }
   },
-  "whitelisted-domains": [
-    "https://*.m.pipedream.net",
-    "https://*.freshchat.com",
-    "https://kakao-api.happytalk.io",
-    "https://bfzyifbc8l.execute-api.us-east-1.amazonaws.com",
-    "https://*.amazonaws.com",
-    "https://*.ngrok.io",
-    "https://*.cloudfront.net",
-    "https://*.freshworks.com",
-    "https://*.myfreshworks.com"
-  ],
+  "dependencies": {
+    "node-emoji": "1.11.0"
+  },
   "engines": {
-    "node": "14.0.0",
-    "fdk": "8.6.6"
+    "node": "18.9.1",
+    "fdk": "9.0.8"
   }
 }

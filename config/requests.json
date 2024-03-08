@@ -1,0 +1,241 @@
+{
+  "createConversation": {
+    "schema": {
+      "protocol": "https",
+      "method": "POST",
+      "host": "<%= context.freshChatUrl %>",
+      "path": "/v2/conversations",
+      "headers": {
+        "Authorization": "Bearer <%= iparam.freshChat_key %>",
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "createUser": {
+    "schema": {
+      "protocol": "https",
+      "method": "POST",
+      "host": "<%= context.freshChatUrl %>",
+      "path": "/v2/users",
+      "headers": {
+        "Authorization": "Bearer <%= iparam.freshChat_key %>",
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "searchUser": {
+    "schema": {
+      "protocol": "https",
+      "method": "GET",
+      "host": "<%= context.freshChatUrl %>",
+      "path": "/v2/users",
+      "query": {
+        "reference_id": "<%= context.user_key %>"
+      },
+      "headers": {
+        "Authorization": "Bearer <%= iparam.freshChat_key %>",
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "getUserConversationId": {
+    "schema": {
+      "protocol": "https",
+      "method": "GET",
+      "host": "<%= context.freshChatUrl %>",
+      "path": "/v2/users/<%= context.user_id %>/conversations",
+      "headers": {
+        "Authorization": "Bearer <%= iparam.freshChat_key %>",
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "getConversationDetails": {
+    "schema": {
+      "protocol": "https",
+      "method": "GET",
+      "host": "<%=  context.freshChatUrl %>",
+      "path": "/v2/conversations/<%= context.conversation_id %>",
+      "headers": {
+        "Authorization": "Bearer <%= iparam.freshChat_key %>",
+        "Content-Type": "application/json"
+      }
+    }
+  },
+
+  "updateConversationId": {
+    "schema": {
+      "protocol": "https",
+      "method": "PUT",
+      "host": "<%= context.freshChatUrl  %>",
+      "path": "/v2/conversations/<%= context.conversation_id %>",
+      "headers": {
+        "Authorization": "Bearer <%= iparam.freshChat_key %>",
+        "Content-Type": "application/json"
+      }
+    }
+  },
+
+  "sendMessageToAgent": {
+    "schema": {
+      "protocol": "https",
+      "method": "POST",
+      "host": "<%= context.freshChatUrl %>",
+      "path": "/v2/conversations/<%= context.conversation_id %>/messages",
+      "headers": {
+        "Authorization": "Bearer <%= iparam.freshChat_key %>",
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "searchUserForAgent": {
+    "schema": {
+      "protocol": "https",
+      "method": "GET",
+      "host": "<%= context.freshChatUrl %>",
+      "path": "/v2/users/<%= context.userId %>",
+      "headers": {
+        "Authorization": "Bearer <%= iparam.freshChat_key %>",
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "sendMessageToUser": {
+    "schema": {
+      "protocol": "https",
+      "method": "POST",
+      "host": "kakao-api.happytalk.io",
+      "path": "/v1/chat/write",
+      "headers": {
+        "HT-Client-Id": "cFUbwXGTIfLLesR2",
+        "HT-Client-Secret": "BRUlWlZNQt",
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "multimediaGateway": {
+    "schema": {
+      "protocol": "https",
+      "method": "POST",
+      "host": "xluobk4im6.execute-api.us-east-1.amazonaws.com",
+      "path": "/Dev",
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "registerWebhook": {
+    "schema": {
+      "protocol": "https",
+      "method": "POST",
+      "host": "mqmjsymsz7.execute-api.us-east-1.amazonaws.com",
+      "path": "/default/KakaoFreshchatSender",
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "dashboardGateway": {
+    "schema": {
+      "protocol": "https",
+      "method": "POST",
+      "host": "d9bc7dwox1.execute-api.us-east-1.amazonaws.com",
+      "path": "/default/dashbaord-details",
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "createUserDetails": {
+    "schema": {
+      "protocol": "https",
+      "method": "POST",
+      "host": "<%= context.domain %>",
+      "path": "/v2/users",
+      "headers": {
+        "Authorization": "Bearer <%= iparam.freshChat_key %>",
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "conversationCreateFromAgent": {
+    "schema": {
+      "protocol": "https",
+      "method": "POST",
+      "host": "<%= context.domain %>",
+      "path": "/v2/conversations",
+      "headers": {
+        "Authorization": "Bearer <%= encode(iparam.freshChat_key) %>",
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "channelList": {
+    "schema": {
+      "protocol": "https",
+      "method": "GET",
+      "host": "<%= context.freshChatUrl %>",
+      "path": "/v2/channels",
+      "headers": {
+        "Authorization": "Bearer <%= context.freshChatKey%>"
+      }
+    }
+  },
+  "groupList": {
+    "schema": {
+      "protocol": "https",
+      "method": "GET",
+      "host": "<%= context.freshChatUrl %>",
+      "path": "/v2/groups",
+      "headers": {
+        "Authorization": "Bearer <%= context.freshChatKey %>"
+      }
+    }
+  },
+  "channelsUrl": {
+    "schema": {
+      "protocol": "https",
+      "method": "GET",
+      "host": "<%= context.freshChatUrl %>",
+      "path": "/v2/channels",
+      "query": {
+        "page": "1",
+        "items_per_page": "100",
+        "sort_order": "asc",
+        "sort_by": "name"
+      },
+      "headers": {
+        "Authorization": "Bearer <%= context.freshChatKey %>"
+      }
+    }
+  },
+  "groupUrl": {
+    "schema": {
+      "protocol": "https",
+      "method": "GET",
+      "host": "<%= context.freshChatUrl %>",
+      "path": "/v2/groups",
+      "query": {
+        "page": "1",
+        "items_per_page": "100",
+        "sort_order": "asc",
+        "sort_by": "name"
+      },
+      "headers": {
+        "Authorization": "Bearer <%= context.freshChatKey %>"
+      }
+    }
+  },
+  "verify": {
+    "schema": {
+      "protocol": "https",
+      "method": "GET",
+      "host": "<%= context.freshChatUrl %>",
+      "path": "/v2/accounts/configuration",
+      "headers": {
+        "Authorization": "Bearer <%= context.freshChatKey%>",
+        "Content-Type": "application/json"
+      }
+    }
+  }
+}

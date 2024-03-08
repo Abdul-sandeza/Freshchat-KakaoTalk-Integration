@@ -3,7 +3,7 @@
   "event": "onExternalEvent",
   "timestamp": 1496400354326,
   "region": "US",
-  "domain": "https://manufacturingverticalsandbox.freshchat.com/v2",
+  "domain": "https://manufacturingverticalsandbox.freshchat.com/",
   "data": {
     "user_key": "c0eUY5TATGz1",
     "session_id": "182348751",
